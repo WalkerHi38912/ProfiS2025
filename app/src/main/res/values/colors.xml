@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="Red_Prof">#F87265</color>
+    <color name="Accent_Prof">#48B2E7</color>
+    <color name="Disable_Prof">#2B6B8B</color>
+    <color name="SubTextLight_Prof">#D8D8D8</color>
+    <color name="Background_Prof">#F7F7F9</color>
+    <color name="Block_Prof">#FFFFFF</color>
+    <color name="Text_Prof">#2B2B2B</color>
+    <color name="Hint_Prof">#6A6A6A</color>
+    <color name="SubTextDark">#707B81</color>
+</resources>
