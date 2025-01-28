@@ -1,4 +1,4 @@
-package com.example.pros_android
+package com.example.pros_android.LogIn
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -33,12 +34,16 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.pros_android.R
 import com.example.pros_android.ui.theme.Background_Prof
 import com.example.pros_android.ui.theme.Hint_Prof
 import com.example.pros_android.ui.theme.Red_Prof
 import com.example.pros_android.ui.theme.SubTextDark_Prof
 import com.example.pros_android.ui.theme.Text_Prof
 import com.example.pros_android.ui.theme.newPeninimFontFamily
+import com.example.pros_android.Common.validateEmail
+import com.example.pros_android.ui.theme.Accent_Prof
+import com.example.pros_android.ui.theme.Block_Prof
 
 @Composable
 fun LogInScreen(navController: NavController){
@@ -213,10 +218,16 @@ fun LogInField(navController: NavController){
                     emailBorderColor = Red_Prof
                     passwordBorderColor = Red_Prof
                 } else {
-                    navController.navigate("home")
+                    navController.navigate("onboard1")
                 }
             },
             shape = RoundedCornerShape(14.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Accent_Prof,
+                contentColor = Text_Prof,
+                disabledContainerColor = Accent_Prof,
+                disabledContentColor = Text_Prof
+            ),
             modifier = Modifier
                 .fillMaxWidth()
         ) {

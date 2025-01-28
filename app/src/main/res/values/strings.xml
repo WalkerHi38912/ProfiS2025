@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">Pro\'s_Android</string>
     <string name="title_activity_home_screen">HomeScreenActivity</string>
+    <string name="onboard2_Header1">Начнем</string>
+    <string name="onboard2_Headre2">путешествие</string>
+    <string name="onboard2_SubText1">Умная, великолепная и модная</string>
+    <string name="onboard2_SubText2">коллекция Изучите сейчас</string>
+    <string name="onboard3_Header1">У вас есть сила,</string>
+    <string name="onboard3_Headre2">чтобы</string>
+    <string name="onboard3_SubText1">В вашей комнате много красивых и</string>
+    <string name="onboard3_SubText2">привлекательных растений</string>
 </resources>
