@@ -1,4 +1,4 @@
-package com.example.pros_android.OnBoard
+package com.example.pros_android.Presentation.Screens.OnBoard
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween

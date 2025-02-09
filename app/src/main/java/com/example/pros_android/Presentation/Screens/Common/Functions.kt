@@ -1,4 +1,4 @@
-package com.example.pros_android.Common
+package com.example.pros_android.Presentation.Screens.Common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,7 +30,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.pros_android.Home.CategoryBox
+import com.example.pros_android.Presentation.Screens.Home.CategoryBox
 import com.example.pros_android.R
 import com.example.pros_android.ui.theme.Accent_Prof
 import com.example.pros_android.ui.theme.Block_Prof
@@ -40,7 +40,7 @@ import com.example.pros_android.ui.theme.Text_Prof
 import com.example.pros_android.ui.theme.newPeninimFontFamily
 
 fun validateEmail(email: String): Boolean {
-    val regex = "^[a-z0-9]+@[a-z0-9]+\\.[a-z]{2,}$".toRegex()
+    val regex = "^[a-z0-9]+([._%+-]?[a-z0-9]+)*@[a-z0-9]+\\.[a-z]{2,}$".toRegex()
     return regex.matches(email)
 }
 

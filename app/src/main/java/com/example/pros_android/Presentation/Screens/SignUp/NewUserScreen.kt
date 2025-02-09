@@ -1,8 +1,6 @@
-package com.example.pros_android.LogIn
+package com.example.pros_android.Presentation.Screens.SignUp
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,26 +25,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.pros_android.Presentation.Screens.Common.validateEmail
+import com.example.pros_android.Presentation.ViewModel.AuthViewModel
 import com.example.pros_android.R
+import com.example.pros_android.ui.theme.Accent_Prof
 import com.example.pros_android.ui.theme.Background_Prof
 import com.example.pros_android.ui.theme.Hint_Prof
 import com.example.pros_android.ui.theme.Red_Prof
 import com.example.pros_android.ui.theme.SubTextDark_Prof
 import com.example.pros_android.ui.theme.Text_Prof
 import com.example.pros_android.ui.theme.newPeninimFontFamily
-import com.example.pros_android.Common.validateEmail
-import com.example.pros_android.ui.theme.Accent_Prof
-import com.example.pros_android.ui.theme.Block_Prof
 
 @Composable
-fun LogInScreen(navController: NavController){
+fun NewUserScreen(navController: NavController, viewModel: AuthViewModel){
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -58,10 +55,10 @@ fun LogInScreen(navController: NavController){
         Spacer(Modifier.height(78.dp))
         Greeting()
         Spacer(Modifier.height(35.dp))
-        LogInField(navController)
+        LogInField(navController, viewModel)
         Spacer(Modifier.weight(1f))
-        CreateAccount()
-        Spacer(Modifier.height(50.dp))
+        //CreateAccount()
+        //Spacer(Modifier.height(50.dp))
     }
 }
 
@@ -69,7 +66,7 @@ fun LogInScreen(navController: NavController){
 fun Greeting(){
     Column {
         Text(
-            text = "Привет!",
+            text = "Регистрация",
             style = TextStyle(
                 fontFamily = newPeninimFontFamily,
                 fontSize = 32.sp,
@@ -102,9 +99,9 @@ fun Greeting(){
 }
 
 @Composable
-fun LogInField(navController: NavController){
-    var EmailAdress by remember { mutableStateOf("") }
-    var Password by remember { mutableStateOf("") }
+fun LogInField(navController: NavController, authViewModel: AuthViewModel){
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false   ) }
     var isValidEmail by remember { mutableStateOf(true) }
 
@@ -130,9 +127,9 @@ fun LogInField(navController: NavController){
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth(),
-            value = EmailAdress,
+            value = email,
             onValueChange = {
-                EmailAdress = it
+                email = it
                 isValidEmail = validateEmail(it)
                 emailBorderColor = if (!isValidEmail) Red_Prof else Color.Transparent
             },
@@ -169,8 +166,8 @@ fun LogInField(navController: NavController){
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth(),
-            value = Password,
-            onValueChange = {Password = it},
+            value = password,
+            onValueChange = {password = it},
             placeholder = { Text("Password") },
             singleLine = true,
             shape = RoundedCornerShape(14.dp),
@@ -214,11 +211,12 @@ fun LogInField(navController: NavController){
         Spacer(Modifier.height(24.dp))
         Button(
             onClick = {
-                if (EmailAdress.isBlank() || Password.isBlank()){
+                if (email.isBlank() || password.isBlank()){
                     emailBorderColor = Red_Prof
                     passwordBorderColor = Red_Prof
                 } else {
-                    navController.navigate("onboard1")
+                    //authViewModel.register(email = email, password = password)
+                    //navController.navigate("onboard1")
                 }
             },
             shape = RoundedCornerShape(14.dp),
@@ -244,6 +242,7 @@ fun LogInField(navController: NavController){
         }
     }
 }
+/*
 @Composable
 fun CreateAccount(){
     Row(
@@ -269,4 +268,4 @@ fun CreateAccount(){
             )
         )
     }
-}
+}*/

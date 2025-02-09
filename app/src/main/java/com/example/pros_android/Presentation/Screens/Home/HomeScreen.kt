@@ -1,4 +1,4 @@
-package com.example.pros_android.Home
+package com.example.pros_android.Presentation.Screens.Home
 
 import android.graphics.Paint.Align
 import android.util.Log
@@ -6,10 +6,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -55,8 +58,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.pros_android.Common.Categories
-import com.example.pros_android.Common.ProductCard
+import com.example.pros_android.Presentation.Screens.Common.Categories
+import com.example.pros_android.Presentation.Screens.Common.ProductCard
 import com.example.pros_android.R
 import com.example.pros_android.ui.theme.Accent_Prof
 import com.example.pros_android.ui.theme.Background_Prof
@@ -70,41 +73,40 @@ import com.google.android.material.bottomappbar.BottomAppBar
 
 @ExperimentalMaterial3Api
 @Composable
-fun HomeScreen(){
-    Box (
+fun HomeScreen() {
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Background_Prof)
-    ){
-        Column (
+    ) {
+        Column(
             modifier = Modifier
                 .statusBarsPadding()
                 .fillMaxSize()
-                .padding(start = 20.dp, end = 20.dp)
-        ){
-            TopAppBar()
-            Spacer(Modifier.height(21.dp))
-            SearchAndFilter()
-            Spacer(Modifier.height(21.dp))
-            Categories()
-            Spacer(Modifier.height(24.dp))
-            Popular()
-            Spacer(Modifier.height(29.dp))
-            Sells()
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(141.dp)
-                .align(Alignment.BottomCenter)
         ) {
+            Box(
+                modifier = Modifier
+                    .padding(start = 20.dp, end = 20.dp)
+            ) {
+                Column {
+                    TopAppBar()
+                    Spacer(Modifier.height(21.dp))
+                    SearchAndFilter()
+                    Spacer(Modifier.height(21.dp))
+                    Categories()
+                    Spacer(Modifier.height(24.dp))
+                    Popular()
+                    Spacer(Modifier.height(29.dp))
+                    Sells()
+                }
+            }
+            Spacer(Modifier.weight(1f))
             Image(
-                painter = painterResource(R.drawable.property_1_home),
+                painter = painterResource(R.drawable.bottom_app_bar),
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(141.dp)
             )
         }
     }

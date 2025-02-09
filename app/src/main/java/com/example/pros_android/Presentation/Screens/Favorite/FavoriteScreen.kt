@@ -1,4 +1,4 @@
-package com.example.pros_android.Favorite
+package com.example.pros_android.Presentation.Screens.Favorite
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import coil.compose.rememberAsyncImagePainter
 import com.example.pros_android.R
 
 @Composable

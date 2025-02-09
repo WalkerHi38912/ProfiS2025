@@ -1,11 +1,10 @@
-package com.example.pros_android.Catalog
+package com.example.pros_android.Presentation.Screens.Popular
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,16 +22,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.pros_android.Common.Categories
+
 import com.example.pros_android.R
-import com.example.pros_android.popular.PopTopAppBar
 import com.example.pros_android.ui.theme.Background_Prof
 import com.example.pros_android.ui.theme.Block_Prof
 import com.example.pros_android.ui.theme.Text_Prof
 import com.example.pros_android.ui.theme.newPeninimFontFamily
 
 @Composable
-fun Catalog(){
+fun PopularScreen(){
     Box (
         modifier = Modifier
             .fillMaxSize()
@@ -45,15 +43,13 @@ fun Catalog(){
                 .padding(top = 10.dp, start = 20.dp, end = 20.dp)
         ){
 
-            CatalogTopAppBar()
-            Spacer(Modifier.height(16.dp))
-            Categories()
+            PopTopAppBar()
         }
     }
 }
 
 @Composable
-fun CatalogTopAppBar(){
+fun PopTopAppBar(){
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
@@ -73,10 +69,10 @@ fun CatalogTopAppBar(){
             )
         }
         Text(
-            text = "Каталог",
+            text = "Популярное",
             style = TextStyle(
                 fontFamily = newPeninimFontFamily,
-                fontSize = 16.sp,
+                fontSize = 32.sp,
                 color = Text_Prof
             ),
         )
