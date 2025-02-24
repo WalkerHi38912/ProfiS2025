@@ -39,6 +39,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +51,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -58,8 +60,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
+import coil.size.Size
+import com.example.pros_android.Data.User.UserState
+import com.example.pros_android.Data.User.model.Promotions
 import com.example.pros_android.Presentation.Screens.Common.Categories
+import com.example.pros_android.Presentation.Screens.Common.LoadingComponent
 import com.example.pros_android.Presentation.Screens.Common.ProductCard
+import com.example.pros_android.Presentation.ViewModel.AuthViewModel
 import com.example.pros_android.R
 import com.example.pros_android.ui.theme.Accent_Prof
 import com.example.pros_android.ui.theme.Background_Prof
@@ -70,10 +82,42 @@ import com.example.pros_android.ui.theme.SubTextLight_Prof
 import com.example.pros_android.ui.theme.Text_Prof
 import com.example.pros_android.ui.theme.newPeninimFontFamily
 import com.google.android.material.bottomappbar.BottomAppBar
+import io.ktor.http.Url
 
 @ExperimentalMaterial3Api
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    authViewModel: AuthViewModel
+) {
+    val promotions by authViewModel.promotions
+
+    val userState by authViewModel.userState
+    var currentUserState by remember { mutableStateOf("") }
+
+    LaunchedEffect (Unit){
+        authViewModel.getPromo()
+        Log.e("HomeScreenPromos","$promotions")
+    }
+
+    when (userState) {
+        is UserState.Loading -> {
+            LoadingComponent()
+        }
+
+        is UserState.Success -> {
+            val message = (userState as UserState.Success).message
+            currentUserState = message
+        }
+
+        is UserState.Error -> {
+            val message = (userState as UserState.Error).message
+            currentUserState = message
+        }
+
+        is UserState.Update -> {}
+    }
+
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -93,11 +137,11 @@ fun HomeScreen() {
                     Spacer(Modifier.height(21.dp))
                     SearchAndFilter()
                     Spacer(Modifier.height(21.dp))
-                    Categories()
+                    //Categories()
                     Spacer(Modifier.height(24.dp))
                     Popular()
                     Spacer(Modifier.height(29.dp))
-                    Sells()
+                    Sells(promotions)
                 }
             }
             Spacer(Modifier.weight(1f))
@@ -207,29 +251,6 @@ fun SearchAndFilter(){
 }
 
 @Composable
-fun CategoryBox(text: String){
-    Button(
-        onClick = {},
-        modifier = Modifier
-            .height(40.dp)
-            .width(108.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Block_Prof
-        ),
-        shape = RoundedCornerShape(8.dp)
-    ) {
-        Text(
-            text = text,
-            style = TextStyle(
-                fontFamily = newPeninimFontFamily,
-                fontSize = 12.sp,
-                color = Text_Prof
-            )
-        )
-    }
-}
-
-@Composable
 fun Popular(){
     Column {
         Row (
@@ -256,16 +277,25 @@ fun Popular(){
         }
         Spacer(Modifier.height(30.dp))
         Row {
-            ProductCard()
+            //ProductCard()
             Spacer(Modifier.width(15.dp))
-            ProductCard()
+            //ProductCard()
         }
 
     }
 }
 
 @Composable
-fun Sells(){
+fun Sells(promotions: List<Promotions>){
+    var promoUrl by remember { mutableStateOf("") }
+    Log.e("promoUrl", promoUrl)
+
+    LaunchedEffect(promotions) {
+        promotions.firstOrNull()?.let { promo ->
+            promoUrl = promo.imageUrl
+        }
+    }
+
     Column {
         Row (
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -290,8 +320,16 @@ fun Sells(){
             )
         }
         Spacer(Modifier.height(20.dp))
+
+        val painter = rememberAsyncImagePainter(
+            model = ImageRequest.Builder(LocalContext.current)
+                .decoderFactory(SvgDecoder.Factory())
+                .data(promoUrl)
+                .size(Size.ORIGINAL) // Set the target size to load the image at.
+                .build()
+        )
         Image(
-            painter = painterResource(R.drawable.frame_1000000849),
+            painter = painter,
             contentDescription = null,
             contentScale = ContentScale.FillBounds,
             modifier = Modifier
@@ -299,7 +337,5 @@ fun Sells(){
                 .height(95.dp)
                 .align(Alignment.CenterHorizontally)
         )
-
-
     }
 }

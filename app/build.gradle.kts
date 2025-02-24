@@ -62,12 +62,33 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.0")//ViewModel
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")//ViewModel
     implementation ("androidx.navigation:navigation-compose:2.6.0") //Navigation
 
-    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.0"))//Supabase
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:1.3.2")
+    implementation("io.github.jan-tennert.supabase:compose-auth:1.3.2")
+    implementation("io.github.jan-tennert.supabase:compose-auth-ui:1.3.2")
+    implementation("io.github.jan-tennert.supabase:storage-kt:1.3.2")
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:1.3.2")
+    implementation("io.ktor:ktor-client-cio:2.3.4")
+
+
+    implementation("io.coil-kt:coil-compose:2.0.0")
+    implementation("io.coil-kt:coil-svg:2.0.0")
+
+
+
+
+    /*
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.1.0"))
     implementation("io.github.jan-tennert.supabase:postgrest-kt")
     implementation("io.github.jan-tennert.supabase:auth-kt")
     implementation("io.github.jan-tennert.supabase:realtime-kt")
     implementation("io.ktor:ktor-client-android:3.0.3")
+    implementation ("io.ktor:ktor-client-core:3.0.3")
+
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:1.3.2")
+    //implementation("io.ktor:ktor-client-cio:2.3.4")
+
+     */
 }

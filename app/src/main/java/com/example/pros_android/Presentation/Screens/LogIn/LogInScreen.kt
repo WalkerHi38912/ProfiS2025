@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -36,8 +37,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.pros_android.Data.User.UserState
+import com.example.pros_android.Presentation.Screens.Common.Dialog
+import com.example.pros_android.Presentation.Screens.Common.LoadingDialog
+import com.example.pros_android.Presentation.Screens.Common.ShowToast
+import com.example.pros_android.Presentation.Screens.Common.getErrorMessage
 import com.example.pros_android.R
 import com.example.pros_android.ui.theme.Background_Prof
 import com.example.pros_android.ui.theme.Hint_Prof
@@ -49,8 +55,10 @@ import com.example.pros_android.Presentation.Screens.Common.validateEmail
 import com.example.pros_android.Presentation.ViewModel.AuthViewModel
 import com.example.pros_android.ui.theme.Accent_Prof
 
+@ExperimentalMaterial3Api
 @Composable
 fun LogInScreen(navController: NavController, viewModel: AuthViewModel){
+    var showDialog by remember { mutableStateOf(false) }
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -105,23 +113,25 @@ fun Greeting(){
     }
 }
 
+@ExperimentalMaterial3Api
 @Composable
-fun LogInField(navController: NavController, authViewModel: AuthViewModel){
+fun LogInField(
+    navController: NavController,
+    authViewModel: AuthViewModel = viewModel()
+){
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var passwordVisibility by remember { mutableStateOf(false   ) }
+    var passwordVisibility by remember { mutableStateOf(false) }
     var isValidEmail by remember { mutableStateOf(true) }
     var isAlertVisible  by remember { mutableStateOf(false) }
+    var goHomeScreen by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) }
+    var showLoadingDialog by remember { mutableStateOf(false) }
+    var showToast by remember { mutableStateOf(false) }
 
     val context = LocalContext.current
     val userState by authViewModel.userState
     var currentUserState by remember { mutableStateOf("") }
-
-    LaunchedEffect (Unit){
-        authViewModel.isUserLoggedIn(
-            context
-        )
-    }
 
     val icon = if (passwordVisibility){
         painterResource(id = R.drawable.eye_open)
@@ -131,6 +141,21 @@ fun LogInField(navController: NavController, authViewModel: AuthViewModel){
 
     var emailBorderColor by remember { mutableStateOf(Color.Transparent) }
     var passwordBorderColor by remember { mutableStateOf(Color.Transparent) }
+
+    LaunchedEffect (Unit){
+        authViewModel.isUserLoggedIn(
+            context
+        )
+    }
+    LaunchedEffect (currentUserState){
+        if(currentUserState == "User already logged in!" || currentUserState == "Logged in successfully!"){
+            navController.navigate("catalog"){ // Back To "home" and under this scope
+                popUpTo("catalog"){
+                    inclusive = true
+                }
+            }
+        }
+    }
 
     Column {
         Text(
@@ -234,14 +259,12 @@ fun LogInField(navController: NavController, authViewModel: AuthViewModel){
                     emailBorderColor = Red_Prof
                     passwordBorderColor = Red_Prof
                 } else {
-                    authViewModel.logIn(
+                    goHomeScreen = true
+                    authViewModel.login(
                         context = context,
                         userEmail = email,
                         userPassword = password
                     )
-                    if (currentUserState == (userState as UserState.Success).msg){
-                        navController.navigate("home")
-                    }
                 }
             },
             shape = RoundedCornerShape(14.dp),
@@ -265,10 +288,13 @@ fun LogInField(navController: NavController, authViewModel: AuthViewModel){
                 )
             )
         }
-        Spacer(Modifier.height(40.dp))
+        Spacer(Modifier.height(20.dp))
         Button(
             onClick = {
-                authViewModel.logOut(context)
+                Log.e("IsValidEmail", "$isValidEmail")
+                authViewModel.logout(
+                    context
+                )
             },
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(
@@ -291,53 +317,7 @@ fun LogInField(navController: NavController, authViewModel: AuthViewModel){
                 )
             )
         }
-        Spacer(Modifier.height(40.dp))
-        Button(
-            onClick = {
-                authViewModel.signUp(
-                    context = context,
-                    userEmail = email,
-                    userPassword = password
-                )
-            },
-            shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Accent_Prof,
-                contentColor = Text_Prof,
-                disabledContainerColor = Accent_Prof,
-                disabledContentColor = Text_Prof
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Text(
-                modifier = Modifier
-                    .padding(14.dp),
-                text = "Зарегать",
-                style = TextStyle(
-                    fontFamily = newPeninimFontFamily,
-                    fontSize = 14.sp,
-                    color = Background_Prof
-                )
-            )
-        }
 
-        when(userState){
-            is UserState.Loading -> {
-
-            }
-            is UserState.Success -> {
-                val message = (userState as UserState.Success).msg
-                currentUserState = message
-            }
-            is UserState.Error -> {
-                val message = (userState as UserState.Error).msg
-                emailBorderColor = Red_Prof
-                passwordBorderColor = Red_Prof
-                isAlertVisible = true
-                currentUserState = message
-            }
-        }
         if (isAlertVisible){
             Spacer(Modifier.height(20.dp))
             Text(
@@ -349,12 +329,55 @@ fun LogInField(navController: NavController, authViewModel: AuthViewModel){
                 )
             )
         }
-
+        /*
         if(currentUserState.isNotEmpty()){
             Text(text = currentUserState)
         }
-        Log.e("CurrentUserState", currentUserState)
+        Log.e("CurrentUserState", currentUserState)*/
 
+    }
+
+    Dialog(
+        showDialog = showDialog,
+        errorText = getErrorMessage(currentUserState)
+    ){
+        showDialog = false
+    }
+    LoadingDialog(
+        showDialog = showLoadingDialog
+    ) {
+        showLoadingDialog = false
+    }
+
+    if (showToast && currentUserState.isNotEmpty()){
+        ShowToast(currentUserState)
+    }
+
+    Log.e("CurrentUserState", currentUserState)
+
+    when (userState) {
+        is UserState.Loading -> {
+            showToast = false
+            showLoadingDialog = true
+        }
+
+        is UserState.Success -> {
+            val message = (userState as UserState.Success).message
+            currentUserState = message
+            showLoadingDialog = false
+            showToast = true
+        }
+
+        is UserState.Error -> {
+            val message = (userState as UserState.Error).message
+            currentUserState = message
+            showToast = false
+            showLoadingDialog = false
+            showDialog = true
+            authViewModel.upDateUserState()
+        }
+
+        is UserState.Update -> {}
     }
 }
 @Composable
@@ -383,3 +406,5 @@ fun CreateAccount(){
         )
     }
 }
+
+
