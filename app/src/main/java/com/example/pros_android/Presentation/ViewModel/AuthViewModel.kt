@@ -17,6 +17,7 @@ import io.github.jan.supabase.gotrue.gotrue
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -129,7 +130,7 @@ class AuthViewModel : ViewModel() {
     }
 
     fun getPromo() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 _userState.value = UserState.Loading
                 val data = client.postgrest["Promotions"]
@@ -145,7 +146,7 @@ class AuthViewModel : ViewModel() {
     }
 
     fun getProductsList(){
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try{
                 _userState.value = UserState.Loading
                 val data = client.postgrest["products"]
@@ -162,7 +163,7 @@ class AuthViewModel : ViewModel() {
     }
 
     fun getCollection(collectionId: Int){
-        viewModelScope.launch {
+        viewModelScope.launch (Dispatchers.IO){
             try {
                 _userState.value = UserState.Loading
                 val data = client.postgrest["collection_products"]
