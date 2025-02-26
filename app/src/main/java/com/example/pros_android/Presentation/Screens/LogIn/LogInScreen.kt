@@ -149,7 +149,7 @@ fun LogInField(
     }
     LaunchedEffect (currentUserState){
         if(currentUserState == "User already logged in!" || currentUserState == "Logged in successfully!"){
-            navController.navigate("catalog"){ // Back To "home" and under this scope
+            navController.navigate("catalog"){
                 popUpTo("catalog"){
                     inclusive = true
                 }
@@ -353,7 +353,7 @@ fun LogInField(
         ShowToast(currentUserState)
     }
 
-    Log.e("CurrentUserState", currentUserState)
+    Log.e("LogIn CurrentUserState", currentUserState)
 
     when (userState) {
         is UserState.Loading -> {

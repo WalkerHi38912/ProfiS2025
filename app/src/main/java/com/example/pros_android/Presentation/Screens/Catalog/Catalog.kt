@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -39,8 +40,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pros_android.Data.User.UserState
 import com.example.pros_android.Data.User.model.Product
 import com.example.pros_android.Presentation.Screens.Common.Categories
+import com.example.pros_android.Presentation.Screens.Common.Dialog
 import com.example.pros_android.Presentation.Screens.Common.LoadingComponent
+import com.example.pros_android.Presentation.Screens.Common.LoadingDialog
 import com.example.pros_android.Presentation.Screens.Common.ProductCard
+import com.example.pros_android.Presentation.Screens.Common.getErrorMessage
 import com.example.pros_android.Presentation.ViewModel.AuthViewModel
 import com.example.pros_android.R
 import com.example.pros_android.ui.theme.Background_Prof
@@ -48,6 +52,7 @@ import com.example.pros_android.ui.theme.Block_Prof
 import com.example.pros_android.ui.theme.Text_Prof
 import com.example.pros_android.ui.theme.newPeninimFontFamily
 
+@ExperimentalMaterial3Api
 @Composable
 fun Catalog(
     authViewModel: AuthViewModel
@@ -59,25 +64,45 @@ fun Catalog(
     val collectionItems by authViewModel.collectionItems
 
     var selectedCategory by remember { mutableStateOf(0) }
+    var showLoadingDialog by remember { mutableStateOf(false) }
+    var showErrorDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect (Unit){
         authViewModel.getProductsList()
         Log.e("CatalogProductsList", "$products")
     }
 
+    LoadingDialog(
+        showDialog = showLoadingDialog
+    ) {
+        showLoadingDialog = false
+    }
+
+    Dialog(
+        showDialog = showErrorDialog,
+        errorText = getErrorMessage(currentUserState)
+    ){
+        showErrorDialog = false
+    }
+
+    Log.e("Catalog User State", currentUserState)
     when (userState) {
         is UserState.Loading -> {
-            LoadingComponent()
+            showLoadingDialog = true
         }
 
         is UserState.Success -> {
             val message = (userState as UserState.Success).message
             currentUserState = message
+            showLoadingDialog = false
+            showErrorDialog = false
         }
 
         is UserState.Error -> {
             val message = (userState as UserState.Error).message
             currentUserState = message
+            showLoadingDialog = false
+            showErrorDialog = true
         }
 
         is UserState.Update -> {}
