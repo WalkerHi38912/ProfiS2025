@@ -16,6 +16,7 @@ import com.example.pros_android.Presentation.Screens.MyCart.CartScreen
 import com.example.pros_android.Presentation.Screens.SignUp.NewUserScreen
 import com.example.pros_android.Presentation.Screens.OnBoard.OnboardMain
 import com.example.pros_android.Presentation.Screens.Popular.PopularScreen
+import com.example.pros_android.Presentation.Screens.Search.Search
 import com.example.pros_android.Presentation.ViewModel.AuthViewModel
 
 @ExperimentalMaterial3Api
@@ -55,6 +56,9 @@ fun NavigationGraph(
         }
         composable("loading"){
             LoadingComponent()
+        }
+        composable("Search"){
+            Search(authViewModel)
         }
     }
 }

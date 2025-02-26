@@ -149,8 +149,8 @@ fun LogInField(
     }
     LaunchedEffect (currentUserState){
         if(currentUserState == "User already logged in!" || currentUserState == "Logged in successfully!"){
-            navController.navigate("catalog"){
-                popUpTo("catalog"){
+            navController.navigate("search"){
+                popUpTo("search"){
                     inclusive = true
                 }
             }

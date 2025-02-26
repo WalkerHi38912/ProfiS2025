@@ -34,6 +34,9 @@ class AuthViewModel : ViewModel() {
     private val _collectionItems = mutableStateOf<List<Product>>(emptyList())
     val collectionItems: State<List<Product>> = _collectionItems
 
+    private val _searchResult = mutableStateOf<List<Product>>(emptyList())
+    val searchResult: State<List<Product>> = _searchResult
+
     fun signUp(
         context: Context,
         userEmail: String,
@@ -178,6 +181,25 @@ class AuthViewModel : ViewModel() {
             }catch (e: Exception){
                 _userState.value = UserState.Error("Ошибка загрузки: ${e.message}")
                 Log.e("ViewModelGetCollection", "${e.message}")
+            }
+        }
+    }
+
+    fun searchProducts(query: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                //_userState.value = UserState.Loading
+                val data = client.postgrest["products"]
+                    .select(columns = Columns.list("*")) {
+                        ilike("name", "%$query%")
+                    }
+                    .decodeList<Product>()
+                _searchResult.value = data
+                _userState.value = UserState.Success("Search result loaded successfully")
+                Log.e("ViewModel SearchProducts", "$data")
+            }catch (e: Exception){
+                _userState.value = UserState.Error("Ошибка загрузки: ${e.message}")
+                Log.e("ViewModelSearchProducts", "${e.message}")
             }
         }
     }
