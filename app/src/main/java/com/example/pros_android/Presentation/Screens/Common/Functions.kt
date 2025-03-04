@@ -3,6 +3,7 @@ package com.example.pros_android.Presentation.Screens.Common
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,11 +36,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.pros_android.Data.User.model.Product
 import com.example.pros_android.Presentation.ViewModel.AuthViewModel
@@ -51,17 +55,24 @@ import com.example.pros_android.ui.theme.Hint_Prof
 import com.example.pros_android.ui.theme.SubTextLight_Prof
 import com.example.pros_android.ui.theme.Text_Prof
 import com.example.pros_android.ui.theme.newPeninimFontFamily
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 fun validateEmail(email: String): Boolean {
     val regex = "^[a-z0-9]+([._%+-]?[a-z0-9]+)*@[a-z0-9]+\\.[a-z]{2,}$".toRegex()
     return regex.matches(email)
 }
 @Composable
-fun ProductCard(product: Product){
+fun ProductCard(product: Product, navController: NavHostController){
+    val productJson = Json.encodeToString(product)
+    val encodedProduct = java.net.URLEncoder.encode(productJson, "UTF-8")
     Column(
         modifier = Modifier
+            .clickable {
+                navController.navigate("ProductScreen/$encodedProduct")
+            }
             .clip(RoundedCornerShape(16.dp))
-            .height(200.dp)
+            .height(300.dp)
             .background(Block_Prof)
             .padding(start = 9.dp)
     ) {
@@ -84,13 +95,13 @@ fun ProductCard(product: Product){
                 )
             }
             AsyncImage(
-                model = product.imageUrl,
+                model = product.imageUrlMain,
                 contentDescription = product.name,
                 modifier = Modifier
-                    .padding(top = 18.dp, bottom = 12.dp)
+                    .padding(top = 46.dp, bottom = 12.dp)
                     .align(Alignment.Center)
                     //.background(Color.Green)
-                    .height(80.dp)
+                    .height(160.dp)
                     .width(142.dp),
                 contentScale = ContentScale.Crop
             )
@@ -123,7 +134,7 @@ fun ProductCard(product: Product){
                 modifier = Modifier
                     .clip(RoundedCornerShape(topStart = 16.dp))
                     .size(34.dp)
-                    .background(Accent_Prof)
+                    .background(colorResource(R.color.Main_Color))
             ){
                 Icon(
                     painter = painterResource(R.drawable.cart),
@@ -138,7 +149,7 @@ fun ProductCard(product: Product){
 
 @Composable
 fun Categories(authViewModel: AuthViewModel, selectedCategory: Int, onCategorySelected: (Int) -> Unit){
-    val itemsList = mapOf(0 to "All", 1 to "Tennis", 2 to "Running", 3 to "Classic")
+    val itemsList = mapOf(0 to "Все", 4 to "Полочная Акустика", 5 to "Напольная Акустика", 6 to "Усилители")
     Column {
         Text(
             text = "Категории",
@@ -159,7 +170,7 @@ fun Categories(authViewModel: AuthViewModel, selectedCategory: Int, onCategorySe
                         authViewModel.getCollection(item.first)
                               },
                     modifier = Modifier
-                        .height(40.dp)
+                        .height(50.dp)
                         .width(108.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Block_Prof

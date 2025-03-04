@@ -11,6 +11,14 @@ data class Product(
     val price: String = "",
     @SerialName("stock_quantity")
     val stockQuantity: Int? = null,
-    @SerialName("image_url")
-    val imageUrl: String = ""
+    @SerialName("image_url_main")
+    val imageUrlMain: String = "",
+    @SerialName("image_url_1")
+    val imageUrl1: String? = "",
+    @SerialName("image_url_2")
+    val imageUrl2: String? = "",
+    @SerialName("image_url_3")
+    val imageUrl3: String? = "",
+    @SerialName("image_url_4")
+    val imageUrl4: String? = ""
 )

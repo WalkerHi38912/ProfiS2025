@@ -1,6 +1,7 @@
 package com.example.pros_android.Presentation.Screens.LogIn
 
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -61,6 +63,7 @@ fun LogInScreen(navController: NavController, viewModel: AuthViewModel){
     var showDialog by remember { mutableStateOf(false) }
     Column (
         modifier = Modifier
+            .background(colorResource(R.color.Background))
             .fillMaxWidth()
             .padding(start = 20.dp, end = 20.dp)
             .systemBarsPadding()
@@ -81,7 +84,7 @@ fun LogInScreen(navController: NavController, viewModel: AuthViewModel){
 fun Greeting(){
     Column {
         Text(
-            text = "Привет!",
+            text = "HI-FI'ечная!",
             style = TextStyle(
                 fontFamily = newPeninimFontFamily,
                 fontSize = 32.sp,
@@ -101,7 +104,7 @@ fun Greeting(){
                 .align(Alignment.CenterHorizontally)
         )
         Text(
-            text = "Продолжите Через Социальные Медиа",
+            text = "Продолжите Через Социальные Сети",
             style = TextStyle(
                 fontFamily = newPeninimFontFamily,
                 fontSize = 16.sp,
@@ -149,8 +152,8 @@ fun LogInField(
     }
     LaunchedEffect (currentUserState){
         if(currentUserState == "User already logged in!" || currentUserState == "Logged in successfully!"){
-            navController.navigate("search"){
-                popUpTo("search"){
+            navController.navigate("catalog"){
+                popUpTo("catalog"){
                     inclusive = true
                 }
             }
@@ -176,7 +179,7 @@ fun LogInField(
                 isValidEmail = validateEmail(it)
                 emailBorderColor = if (!isValidEmail) Red_Prof else Color.Transparent
             },
-            placeholder = { Text("xyz@gmail.com") },
+            placeholder = { Text("example@mail.com") },
             singleLine = true,
             shape = RoundedCornerShape(15.dp),
             colors = TextFieldDefaults.colors(
@@ -269,9 +272,9 @@ fun LogInField(
             },
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Accent_Prof,
+                containerColor = colorResource(R.color.Main_Color),
                 contentColor = Text_Prof,
-                disabledContainerColor = Accent_Prof,
+                disabledContainerColor = colorResource(R.color.Main_Color),
                 disabledContentColor = Text_Prof
             ),
             modifier = Modifier
@@ -298,9 +301,9 @@ fun LogInField(
             },
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Accent_Prof,
+                containerColor = colorResource(R.color.Main_Color),
                 contentColor = Text_Prof,
-                disabledContainerColor = Accent_Prof,
+                disabledContainerColor = colorResource(R.color.Main_Color),
                 disabledContentColor = Text_Prof
             ),
             modifier = Modifier

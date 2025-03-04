@@ -29,9 +29,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.pros_android.Data.User.UserState
 import com.example.pros_android.Presentation.Screens.Catalog.CatalogTopAppBar
 import com.example.pros_android.Presentation.Screens.Catalog.ProductsList
@@ -48,7 +50,8 @@ import com.example.pros_android.ui.theme.Hint_Prof
 @ExperimentalMaterial3Api
 @Composable
 fun Search(
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    navHostController: NavHostController
 ){
     val userState by authViewModel.userState
     var currentUserState by remember { mutableStateOf("") }
@@ -104,15 +107,14 @@ fun Search(
     Box (
         modifier = Modifier
             .fillMaxSize()
-            .background(Background_Prof)
+            .background(colorResource(R.color.Background))
     ){
         Column (
             modifier = Modifier
-                .statusBarsPadding()
                 .fillMaxSize()
+                .statusBarsPadding()
                 .padding(top = 10.dp, start = 20.dp, end = 20.dp)
         ){
-
             CatalogTopAppBar("Поиск")
             Spacer(Modifier.height(16.dp))
             OutlinedTextField(
@@ -150,14 +152,10 @@ fun Search(
                 )
             )
             Spacer(Modifier.height(20.dp))
-            ProductsList(if (searchQuery == "") products else searchResult)
+            ProductsList(
+                products =  (if (searchQuery == "") products else searchResult),
+                navHostController = navHostController
+            )
         }
     }
-}
-
-@Composable
-fun SearchField(authViewModel: AuthViewModel){
-    var searchQuery by remember { mutableStateOf("") }
-
-
 }

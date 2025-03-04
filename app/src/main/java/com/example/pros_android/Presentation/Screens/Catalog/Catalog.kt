@@ -29,14 +29,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.pros_android.Data.User.UserState
 import com.example.pros_android.Data.User.model.Product
 import com.example.pros_android.Presentation.Screens.Common.Categories
@@ -49,13 +52,15 @@ import com.example.pros_android.Presentation.ViewModel.AuthViewModel
 import com.example.pros_android.R
 import com.example.pros_android.ui.theme.Background_Prof
 import com.example.pros_android.ui.theme.Block_Prof
+import com.example.pros_android.ui.theme.SubTextLight_Prof
 import com.example.pros_android.ui.theme.Text_Prof
 import com.example.pros_android.ui.theme.newPeninimFontFamily
 
 @ExperimentalMaterial3Api
 @Composable
 fun Catalog(
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    navHostController: NavHostController
 ){
     val userState by authViewModel.userState
     var currentUserState by remember { mutableStateOf("") }
@@ -111,7 +116,7 @@ fun Catalog(
     Box (
         modifier = Modifier
             .fillMaxSize()
-            .background(Background_Prof)
+            .background(colorResource(R.color.Background))
     ){
         Column (
             modifier = Modifier
@@ -127,7 +132,10 @@ fun Catalog(
             }
             Log.e("Category", "$selectedCategory")
             Spacer(Modifier.height(20.dp))
-            ProductsList(if (selectedCategory == 0) products else collectionItems)
+            ProductsList(
+                products = (if (selectedCategory == 0) products else collectionItems),
+                navHostController = navHostController
+            )
         }
     }
 }
@@ -136,9 +144,12 @@ fun Catalog(
 fun CatalogTopAppBar(header: String){
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
+            .background(colorResource(R.color.Main_Color), shape = (RoundedCornerShape(16.dp)))
             .fillMaxWidth()
-            .height(44.dp)
+            .statusBarsPadding()
+            .padding(20.dp)
     ){
         IconButton(
             onClick = {},
@@ -157,34 +168,30 @@ fun CatalogTopAppBar(header: String){
             style = TextStyle(
                 fontFamily = newPeninimFontFamily,
                 fontSize = 16.sp,
-                color = Text_Prof
+                color = colorResource(R.color.Block_Prof)
             ),
         )
         IconButton(
             onClick = {},
             modifier = Modifier
                 .clip(RoundedCornerShape(40.dp))
-                .background(Block_Prof)
+                .background(Color.Transparent)
         ) {
-            Icon(
-                painter = painterResource(R.drawable.favorite),
-                contentDescription = "Menu",
-                tint = Color.Unspecified
-            )
         }
     }
 }
 
 @Composable
-fun ProductsList(products: List<Product>){
+fun ProductsList(products: List<Product>, navHostController: NavHostController){
     LazyVerticalGrid(
         columns = GridCells.Fixed(2), // Две колонки (по 50% каждая)
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp), // Отступы между строками
         horizontalArrangement = Arrangement.spacedBy(8.dp) // Отступы между колонками
     ) {
         items(products) { product ->
-            ProductCard(product)
+            ProductCard(product, navHostController)
         }
     }
 }
