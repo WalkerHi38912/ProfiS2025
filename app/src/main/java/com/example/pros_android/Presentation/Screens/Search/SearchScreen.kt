@@ -115,7 +115,7 @@ fun Search(
                 .statusBarsPadding()
                 .padding(top = 10.dp, start = 20.dp, end = 20.dp)
         ){
-            CatalogTopAppBar("Поиск")
+            CatalogTopAppBar("Поиск", navHostController)
             Spacer(Modifier.height(16.dp))
             OutlinedTextField(
                 modifier = Modifier

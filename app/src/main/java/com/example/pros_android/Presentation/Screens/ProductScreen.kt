@@ -18,11 +18,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,15 +41,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.pros_android.Data.User.model.Product
 import com.example.pros_android.Presentation.Screens.Catalog.CatalogTopAppBar
 import com.example.pros_android.Presentation.Screens.Catalog.ProductsList
 import com.example.pros_android.Presentation.Screens.Common.Categories
+import com.example.pros_android.Presentation.Screens.Common.Dialog
+import com.example.pros_android.Presentation.Screens.Common.getErrorMessage
 import com.example.pros_android.Presentation.ViewModel.AuthViewModel
 import com.example.pros_android.R
 import com.example.pros_android.ui.theme.Background_Prof
@@ -58,9 +65,11 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.net.URLDecoder
 
+@ExperimentalMaterial3Api
 @Composable
 fun ProductScreen(
-    navBackStackEntry: NavBackStackEntry
+    navBackStackEntry: NavBackStackEntry,
+    navHostController: NavHostController
 ){
     val productJson = navBackStackEntry.arguments?.getString("product")
     val decodeUserJson = URLDecoder.decode(productJson, "UTF-8")
@@ -68,6 +77,48 @@ fun ProductScreen(
 
     val imagesList = listOf(product.imageUrlMain, product.imageUrl1, product.imageUrl2, product.imageUrl3, product.imageUrl4)
     var mainImage by remember { mutableStateOf(product.imageUrlMain) }
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    if(showDialog){
+        AlertDialog(
+            onDismissRequest = {showDialog = false},
+            title = {
+                Text(
+                    text = product.name,
+                    style = TextStyle(
+                        fontFamily = newPeninimFontFamily,
+                        fontSize = 20.sp,
+                        color = colorResource(R.color.Text_Prof)
+                    )
+                )
+            },
+            text = {
+                Text(
+                    text = product.description,
+                    style = TextStyle(
+                        fontFamily = newPeninimFontFamily,
+                        fontSize = 14.sp,
+                        color = colorResource(R.color.Text_Prof)
+                    )
+                )
+            },
+            confirmButton = {
+                Text(
+                    text = "Обратно",
+                    style = TextStyle(
+                        fontFamily = newPeninimFontFamily,
+                        fontSize = 14.sp,
+                        color = colorResource(R.color.Main_Color)
+                    ),
+                    modifier = Modifier
+                        .clickable {
+                            showDialog = false
+                        }
+                )
+            }
+        )
+    }
 
     Box (
         modifier = Modifier
@@ -81,7 +132,7 @@ fun ProductScreen(
                 .padding(top = 10.dp, start = 20.dp, end = 20.dp)
         ){
 
-            CatalogTopAppBar("HI-FI'ечная")
+            CatalogTopAppBar("HI-FI'ечная", navHostController = navHostController)
             Spacer(Modifier.height(16.dp))
             Text(
                 text = product.name,
@@ -143,16 +194,31 @@ fun ProductScreen(
                     color = colorResource(R.color.Text_Prof)
                 )
             )
-            /*
             Spacer(Modifier.height(8.dp))
             Text(
-                text = product.description,
+                text = "${product.description}....",
                 style = TextStyle(
                     fontFamily = newPeninimFontFamily,
                     fontSize = 14.sp,
                     color = colorResource(R.color.SubTextLight_Prof)
-                )
-            )*/
+                ),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 6
+            )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = "Все",
+                style = TextStyle(
+                    fontFamily = newPeninimFontFamily,
+                    fontSize = 14.sp,
+                    //fontWeight = FontWeight.Bold,
+                    color = colorResource(R.color.Main_Color)
+                ),
+                modifier = Modifier
+                    .clickable {
+                        showDialog = true
+                    }
+            )
             Spacer(Modifier.weight(1f))
             Row(
                 verticalAlignment = Alignment.CenterVertically

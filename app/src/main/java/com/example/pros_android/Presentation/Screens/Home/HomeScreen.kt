@@ -4,6 +4,7 @@ import android.graphics.Paint.Align
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -52,22 +53,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.decode.SvgDecoder
 import coil.request.ImageRequest
 import coil.size.Size
 import com.example.pros_android.Data.User.UserState
+import com.example.pros_android.Data.User.model.Product
 import com.example.pros_android.Data.User.model.Promotions
+import com.example.pros_android.Presentation.Screens.Catalog.ProductsList
 import com.example.pros_android.Presentation.Screens.Common.Categories
 import com.example.pros_android.Presentation.Screens.Common.LoadingComponent
 import com.example.pros_android.Presentation.Screens.Common.ProductCard
@@ -87,15 +93,21 @@ import io.ktor.http.Url
 @ExperimentalMaterial3Api
 @Composable
 fun HomeScreen(
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    navHostController: NavHostController
 ) {
     val promotions by authViewModel.promotions
 
     val userState by authViewModel.userState
+    val products by authViewModel.products
+    val collectionItems by authViewModel.collectionItems
+
     var currentUserState by remember { mutableStateOf("") }
+    var selectedCategory by remember { mutableStateOf(0) }
 
     LaunchedEffect (Unit){
         authViewModel.getPromo()
+        authViewModel.getProductsList()
         Log.e("HomeScreenPromos","$promotions")
     }
 
@@ -135,11 +147,13 @@ fun HomeScreen(
                 Column {
                     TopAppBar()
                     Spacer(Modifier.height(21.dp))
-                    SearchAndFilter()
+                    SearchAndFilter(navHostController)
                     Spacer(Modifier.height(21.dp))
-                    //Categories()
+                    Categories(authViewModel, selectedCategory){ newCategory ->
+                        selectedCategory = newCategory
+                    }
                     Spacer(Modifier.height(24.dp))
-                    Popular()
+                    Popular(products, collectionItems, selectedCategory, navHostController)
                     Spacer(Modifier.height(29.dp))
                     Sells(promotions)
                 }
@@ -174,7 +188,7 @@ fun TopAppBar(){
             )
         }
         Text(
-            text = "ГЛАВНАЯ",
+            text = "HI-FI'ечная",
             style = TextStyle(
                 fontFamily = newPeninimFontFamily,
                 fontSize = 32.sp,
@@ -196,45 +210,46 @@ fun TopAppBar(){
     }
 }
 @Composable
-fun SearchAndFilter(){
+fun SearchAndFilter(
+    navHostController: NavHostController
+){
     var searchQuery by remember { mutableStateOf("") }
 
     Row (
         modifier = Modifier
             .height(52.dp)
     ){
-        OutlinedTextField(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .clip(RoundedCornerShape(16.dp))
+                .fillMaxHeight()
+                .background(colorResource(R.color.Block_Prof))
                 .weight(1f)
-            ,
-            value = searchQuery,
-            onValueChange = {searchQuery = it},
-            placeholder = { Text("Поиск") },
-            singleLine = true,
-            shape = RoundedCornerShape(14.dp),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Block_Prof,
-                unfocusedContainerColor = Block_Prof,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedLabelColor = Hint_Prof,
-                unfocusedLabelColor = Hint_Prof,
-                focusedTextColor = Color.Unspecified,
-                unfocusedTextColor = Color.Unspecified,
-                cursorColor = Hint_Prof
-            ),
-
-            leadingIcon = {
+                .clickable {
+                    navHostController.navigate("Search")
+                }
+        ){
+            Row (
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .fillMaxSize()
+            ){
                 Icon(
                     painter = painterResource(R.drawable.marker),
                     contentDescription = null
                 )
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Password
-            )
-        )
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    text = "Поиск",
+                    style = TextStyle(
+                        fontFamily = newPeninimFontFamily,
+                        fontSize = 16.sp,
+                        color = Text_Prof
+                    )
+                )
+            }
+        }
         Spacer(Modifier.width(14.dp))
         IconButton(
             onClick = {},
@@ -251,7 +266,7 @@ fun SearchAndFilter(){
 }
 
 @Composable
-fun Popular(){
+fun Popular(products: List<Product>, collectionItems: List<Product>, selectedCategory: Int, navHostController: NavHostController){
     Column {
         Row (
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -259,7 +274,7 @@ fun Popular(){
                 .fillMaxWidth()
         ){
             Text(
-                text = "Категории",
+                text = "Популярное",
                 style = TextStyle(
                     fontFamily = newPeninimFontFamily,
                     fontSize = 16.sp,
@@ -270,17 +285,20 @@ fun Popular(){
                 text = "Все",
                 style = TextStyle(
                     fontFamily = newPeninimFontFamily,
-                    fontSize = 12.sp,
-                    color = Accent_Prof
-                )
+                    fontSize = 14.sp,
+                    color = colorResource(R.color.Main_Color)
+                ),
+                modifier = Modifier
+                    .clickable {
+                        navHostController.navigate("catalog")
+                    }
             )
         }
         Spacer(Modifier.height(30.dp))
-        Row {
-            //ProductCard()
-            Spacer(Modifier.width(15.dp))
-            //ProductCard()
-        }
+        ProductsList(
+            products = (if (selectedCategory == 0) products else collectionItems),
+            navHostController = navHostController
+        )
 
     }
 }

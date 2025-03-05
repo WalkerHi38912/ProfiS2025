@@ -116,7 +116,7 @@ fun Catalog(
     Box (
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(R.color.Background))
+            //.background(colorResource(R.color.Background))
     ){
         Column (
             modifier = Modifier
@@ -125,7 +125,7 @@ fun Catalog(
                 .padding(top = 10.dp, start = 20.dp, end = 20.dp)
         ){
 
-            CatalogTopAppBar("Каталог")
+            CatalogTopAppBar("Каталог", navHostController)
             Spacer(Modifier.height(16.dp))
             Categories(authViewModel, selectedCategory){ newCategory ->
                 selectedCategory = newCategory
@@ -141,18 +141,19 @@ fun Catalog(
 }
 
 @Composable
-fun CatalogTopAppBar(header: String){
+fun CatalogTopAppBar(header: String, navHostController: NavHostController){
     Row (
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .background(colorResource(R.color.Main_Color), shape = (RoundedCornerShape(16.dp)))
+            //.background(colorResource(R.color.Block_Prof), shape = (RoundedCornerShape(16.dp)))
             .fillMaxWidth()
             .statusBarsPadding()
-            .padding(20.dp)
     ){
         IconButton(
-            onClick = {},
+            onClick = {
+                navHostController.popBackStack()
+            },
             modifier = Modifier
                 .clip(RoundedCornerShape(40.dp))
                 .background(Block_Prof)
@@ -168,15 +169,20 @@ fun CatalogTopAppBar(header: String){
             style = TextStyle(
                 fontFamily = newPeninimFontFamily,
                 fontSize = 16.sp,
-                color = colorResource(R.color.Block_Prof)
+                color = colorResource(R.color.Text_Prof)
             ),
         )
         IconButton(
             onClick = {},
             modifier = Modifier
                 .clip(RoundedCornerShape(40.dp))
-                .background(Color.Transparent)
+                .background(Block_Prof)
         ) {
+            Icon(
+                painter = painterResource(R.drawable.bag_black),
+                contentDescription = "Menu",
+                tint = Color.Unspecified
+            )
         }
     }
 }

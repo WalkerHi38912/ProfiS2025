@@ -37,7 +37,7 @@ fun NavigationGraph(
             OnboardMain(navController)
         }
         composable("home") {
-            HomeScreen(authViewModel)
+            HomeScreen(authViewModel, navController)
         }
         composable("pop"){
             PopularScreen()
@@ -67,7 +67,7 @@ fun NavigationGraph(
             route = "ProductScreen/{product}",
             arguments = listOf(navArgument("product"){type = NavType.StringType})
         ){ backStackEntry ->
-            ProductScreen(backStackEntry)
+            ProductScreen(backStackEntry, navController)
         }
     }
 }
