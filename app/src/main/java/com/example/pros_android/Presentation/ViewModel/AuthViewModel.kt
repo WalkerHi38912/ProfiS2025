@@ -37,6 +37,18 @@ class AuthViewModel : ViewModel() {
     private val _searchResult = mutableStateOf<List<Product>>(emptyList())
     val searchResult: State<List<Product>> = _searchResult
 
+    private val _popFloorAcoustic = mutableStateOf<List<Product>>(emptyList())
+    val popFloorAcoustic: State<List<Product>> = _popFloorAcoustic
+
+    private val _popShelfAcoustic = mutableStateOf<List<Product>>(emptyList())
+    val popShelfAcoustic: State<List<Product>> = _popShelfAcoustic
+
+    private val _popAmplifiers = mutableStateOf<List<Product>>(emptyList())
+    val popAmplifiers: State<List<Product>> = _popAmplifiers
+
+    private val _popLP = mutableStateOf<List<Product>>(emptyList())
+    val popLP: State<List<Product>> = _popLP
+
     fun signUp(
         context: Context,
         userEmail: String,
@@ -175,7 +187,17 @@ class AuthViewModel : ViewModel() {
                     }
                     .decodeList<CollectionProductWrapper>()
                     .map { it.products }
-                _collectionItems.value = data
+                if (collectionId == 7){
+                    _popShelfAcoustic.value = data
+                } else if (collectionId == 8){
+                    _popFloorAcoustic.value = data
+                } else if (collectionId == 9){
+                    _popAmplifiers.value = data
+                } else if (collectionId == 10){
+                    _popLP.value = data
+                } else{
+                    _collectionItems.value = data
+                }
                 _userState.value = UserState.Success("Collection loaded successfully")
                 Log.e("ViewModelGetCollection", "$data")
             }catch (e: Exception){
@@ -184,8 +206,6 @@ class AuthViewModel : ViewModel() {
             }
         }
     }
-
-    fun get
 
     fun searchProducts(query: String){
         viewModelScope.launch(Dispatchers.IO) {
