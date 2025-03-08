@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -150,46 +152,37 @@ fun ProductCard(product: Product, navController: NavHostController){
 @Composable
 fun Categories(authViewModel: AuthViewModel, selectedCategory: Int, onCategorySelected: (Int) -> Unit){
     val itemsList = mapOf(0 to "Все", 4 to "Полочная Акустика", 5 to "Напольная Акустика", 6 to "Усилители")
-    Column {
-        Text(
-            text = "Категории",
-            style = TextStyle(
-                fontFamily = newPeninimFontFamily,
-                fontSize = 16.sp,
-                color = Text_Prof
-            )
-        )
-        Spacer(Modifier.height(19.dp))
-        LazyRow (
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ){
-            items(itemsList.toList()){ item ->
-                Button(
-                    onClick = {
-                        onCategorySelected(item.first)
-                        authViewModel.getCollection(item.first)
-                              },
-                    modifier = Modifier
-                        .height(50.dp)
-                        .width(108.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Block_Prof
-                    ),
-                    shape = RoundedCornerShape(8.dp)
-                ) {
-                    Text(
-                        text = item.second,
-                        style = TextStyle(
-                            fontFamily = newPeninimFontFamily,
-                            fontSize = 12.sp,
-                            color = Text_Prof
-                        )
+    LazyRow (
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 8.dp)
+    ){
+        items(itemsList.toList()){ item ->
+            Button(
+                onClick = {
+                    onCategorySelected(item.first)
+                    authViewModel.getCollection(item.first)
+                },
+                modifier = Modifier
+                    .height(50.dp)
+                    .width(108.dp)
+                    .shadow(8.dp, shape = RoundedCornerShape(8.dp))
+                ,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Block_Prof
+                ),
+                shape = RoundedCornerShape(8.dp)
+            ) {
+                Text(
+                    text = item.second,
+                    style = TextStyle(
+                        fontFamily = newPeninimFontFamily,
+                        fontSize = 12.sp,
+                        color = Text_Prof
                     )
-                }
+                )
             }
         }
     }
-
 }
 
 @ExperimentalMaterial3Api

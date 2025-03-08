@@ -117,40 +117,56 @@ fun Search(
         ){
             CatalogTopAppBar("Поиск", navHostController)
             Spacer(Modifier.height(16.dp))
-            OutlinedTextField(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                ,
-                value = searchQuery,
-                onValueChange = {
-                    searchQuery = it
-                    authViewModel.searchProducts(it)
-                },
-                placeholder = { Text("Поиск") },
-                singleLine = true,
-                shape = RoundedCornerShape(14.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Block_Prof,
-                    unfocusedContainerColor = Block_Prof,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedLabelColor = Hint_Prof,
-                    unfocusedLabelColor = Hint_Prof,
-                    focusedTextColor = Color.Unspecified,
-                    unfocusedTextColor = Color.Unspecified,
-                    cursorColor = Hint_Prof
-                ),
-
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.marker),
-                        contentDescription = null
+            ){
+                OutlinedTextField(
+                    modifier = Modifier
+                        .weight(1f)
+                    ,
+                    value = searchQuery,
+                    onValueChange = {
+                        searchQuery = it
+                        authViewModel.searchProducts(it)
+                    },
+                    placeholder = { Text("Поиск") },
+                    singleLine = true,
+                    shape = RoundedCornerShape(14.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Block_Prof,
+                        unfocusedContainerColor = Block_Prof,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        focusedLabelColor = Hint_Prof,
+                        unfocusedLabelColor = Hint_Prof,
+                        focusedTextColor = Color.Unspecified,
+                        unfocusedTextColor = Color.Unspecified,
+                        cursorColor = Hint_Prof
+                    ),
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(R.drawable.marker),
+                            contentDescription = null
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Password
                     )
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password
                 )
-            )
+                Spacer(Modifier.width(10.dp))
+                IconButton(
+                    onClick = {},
+                    modifier = Modifier
+                        .size(52.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.group_1000000743),
+                        contentDescription = null,
+                        tint = Color.Unspecified
+                    )
+                }
+            }
             Spacer(Modifier.height(20.dp))
             ProductsList(
                 products =  (if (searchQuery == "") products else searchResult),

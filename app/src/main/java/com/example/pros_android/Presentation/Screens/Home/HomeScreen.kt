@@ -49,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -113,7 +114,7 @@ fun HomeScreen(
 
     when (userState) {
         is UserState.Loading -> {
-            LoadingComponent()
+            //LoadingComponent()
         }
 
         is UserState.Success -> {
@@ -133,7 +134,7 @@ fun HomeScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Background_Prof)
+            .background(colorResource(R.color.Background))
     ) {
         Column(
             modifier = Modifier
@@ -142,31 +143,42 @@ fun HomeScreen(
         ) {
             Box(
                 modifier = Modifier
-                    .padding(start = 20.dp, end = 20.dp)
+                    //.padding(start = 20.dp, end = 20.dp)
             ) {
                 Column {
                     TopAppBar()
                     Spacer(Modifier.height(21.dp))
-                    SearchAndFilter(navHostController)
+                    //SearchAndFilter(navHostController)
                     Spacer(Modifier.height(21.dp))
-                    Categories(authViewModel, selectedCategory){ newCategory ->
-                        selectedCategory = newCategory
+                    Row{
+                        Spacer(Modifier.width(10.dp))
+                        IconButton(
+                            onClick = {
+                                navHostController.navigate("Search")
+                            },
+                            modifier = Modifier
+                                .shadow(8.dp, shape = RoundedCornerShape(40.dp))
+                                .background(colorResource(R.color.Block_Prof))
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.marker),
+                                contentDescription = null,
+                                tint = Color.Unspecified
+                            )
+                        }
+                        //Spacer(Modifier.width(10.dp))
+                        Categories(authViewModel, selectedCategory){ newCategory ->
+                            selectedCategory = newCategory
+                        }
                     }
                     Spacer(Modifier.height(24.dp))
                     Popular(products, collectionItems, selectedCategory, navHostController)
-                    Spacer(Modifier.height(29.dp))
-                    Sells(promotions)
                 }
             }
-            Spacer(Modifier.weight(1f))
-            Image(
-                painter = painterResource(R.drawable.bottom_app_bar),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-            )
         }
+        BottomAppBar(
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
@@ -209,6 +221,80 @@ fun TopAppBar(){
         }
     }
 }
+
+@Composable
+fun BottomAppBar(
+    modifier: Modifier = Modifier
+){
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .shadow(8.dp, shape = RoundedCornerShape(16.dp))
+            .background(colorResource(R.color.Block_Prof))
+
+    ){
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .padding(start = 20.dp, end = 20.dp)
+                .fillMaxWidth()
+        ){
+            IconButton(
+                onClick = {},
+                modifier = Modifier
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.home),
+                    contentDescription = "Card",
+                    tint = Color.Unspecified
+                )
+            }
+            IconButton(
+                onClick = {},
+                modifier = Modifier
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.favorite),
+                    contentDescription = "Card",
+                    tint = Color.Unspecified
+                )
+            }
+            IconButton(
+                onClick = {},
+                modifier = Modifier
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.bag_black),
+                    contentDescription = "Card",
+                    tint = Color.Unspecified
+                )
+            }
+            IconButton(
+                onClick = {},
+                modifier = Modifier
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.notification),
+                    contentDescription = "Card",
+                    tint = Color.Unspecified
+                )
+            }
+            IconButton(
+                onClick = {},
+                modifier = Modifier
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.profile),
+                    contentDescription = "Card",
+                    tint = Color.Unspecified
+                )
+            }
+        }
+    }
+}
+/*
 @Composable
 fun SearchAndFilter(
     navHostController: NavHostController
@@ -263,11 +349,14 @@ fun SearchAndFilter(
             )
         }
     }
-}
+}*/
 
 @Composable
 fun Popular(products: List<Product>, collectionItems: List<Product>, selectedCategory: Int, navHostController: NavHostController){
-    Column {
+    Column (
+        modifier = Modifier
+            .padding(start = 10.dp, end = 10.dp, bottom = 80.dp)
+    ){
         Row (
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier

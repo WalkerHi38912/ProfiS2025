@@ -185,6 +185,8 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+    fun get
+
     fun searchProducts(query: String){
         viewModelScope.launch(Dispatchers.IO) {
             try {
